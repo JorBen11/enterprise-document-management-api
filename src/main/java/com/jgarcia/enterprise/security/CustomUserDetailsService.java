@@ -1,5 +1,6 @@
 package com.jgarcia.enterprise.security;
 
+import com.jgarcia.enterprise.entity.Role;
 import com.jgarcia.enterprise.repository.UserRepository;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +21,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        com.jgarcia.enterprise.entity.User user = userRepository.findByName(username)
+        com.jgarcia.enterprise.entity.User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found."));
 
         return User.builder()
@@ -30,7 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .roles(
                         user.getRoles()
                                 .stream()
-                                .map(r -> "ROLE_" + r.getName())
+                                .map(Role::getName)
                                 .toArray(String[]::new)
                 )
                 .build();
